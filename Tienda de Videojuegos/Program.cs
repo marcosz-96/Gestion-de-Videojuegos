@@ -36,7 +36,8 @@ namespace Tienda_de_Videojuegos
 
         static bool existe = false;
         static string palabra, nombre;
-        static int opcion, edad;
+        static int opcion, edad, numero, contador;
+        static double sumarPrecio;
 
         static void Main(string[] args)
         {
@@ -52,11 +53,13 @@ namespace Tienda_de_Videojuegos
             Console.Clear();
             Console.WriteLine("8===>Bienvenido al programa gestion de Juegos!<===8\n");
             Console.WriteLine("Seleccione una opcion:");
-            Console.WriteLine("1: Agregar juegos a la lista.");
-            Console.WriteLine("2: Ver lista de juegos agregados.");
+            Console.WriteLine("1: Agregar juegos a la Lista.");
+            Console.WriteLine("2: Ver lista de juegos Agregados.");
             Console.WriteLine("3: Ordenar precios de manera Descendente.");
             Console.WriteLine("4: Ordenar precios de manera Ascendente.");
-            Console.WriteLine("5: Filtrar juegos por edad.");
+            Console.WriteLine("5: Filtrar juegos por Edad.");
+            Console.WriteLine("6: Registrar Ventas.");
+            Console.WriteLine("7: Calcular Promedio de Precios en juegos Disponibles");
             Console.WriteLine("0: salir.");
      
         }
@@ -79,6 +82,12 @@ namespace Tienda_de_Videojuegos
                     break;
                 case 5:
                     FiltrarPorEdad(juegos, edad);
+                    break;
+                case 6:
+                    RegistarVentas(juegos, empresas, ventas, numero);
+                    break;
+                case 7:
+                    CalcularPromedioDePrecio(juegos);
                     break;
                 case 0:
                     Console.WriteLine("Fin del programa");
@@ -357,16 +366,60 @@ namespace Tienda_de_Videojuegos
             Console.WriteLine("\nPresione 'enter' para volver al menu");
             Console.ReadKey();
         }
+        static void RegistarVentas(List<Videojuegos> juegos, string[] empresas, int[,] ventas, int numero)
+        {
+            Console.Clear();
+            //Mostramos las empresas con las que trabajamos
+            Console.WriteLine(">>>Registrando Ventas<<<");
+            for (int i = 0; i < empresas.Length; i++)
+            {
+                Console.WriteLine($"{i + 1} {empresas[i]}");
+            }
+            //elegios una empresa para registrar ventas
+            Console.Write("Seleccione una Empresa entre (1-3): ");
+            numero = int.Parse(Console.ReadLine()) -1;
+            //verificamos que el indice sea válido
+            if (numero < 0 || numero > empresas.Length) 
+            {
+                Console.WriteLine("Empresa no válida. Ingrese un número válido");
+            }
+            //registramos ventas para cada mes
+            for (int mes = 0; mes < 12; mes++) 
+            {
+                Console.WriteLine($"Ingrese la cantidad de juegos vendido en {mes +1} mes: ");
+                ventas[numero, mes] = int.Parse(Console.ReadLine());
+            }
+            Console.WriteLine("\nVentas registradas exitosamnete!");
+            Console.WriteLine("Presione 'enter' para volver al menú");
+            Console.ReadKey();
+        }
+        static void CalcularPromedioDePrecio(List<Videojuegos> juegos)
+        {
+            Console.Clear();
+            sumarPrecio = 0;
+            contador = 0;
 
-
-
-
-
-
-
-
-
-
-
+            //calcular la suma de los precios de los juegos disponibles
+            foreach (var disponible in juegos)
+            {
+                if (disponible.Disponibilidad)
+                {
+                    sumarPrecio += disponible.Precio;
+                    contador++;
+                }
+            }
+            //mostrar el promedio de los juegos disponibles
+            if (contador > 0) 
+            {
+                double promedio = sumarPrecio / contador;
+                Console.WriteLine($"\nEl promedio de precios en los juegos disponibles es: {promedio}");
+            }
+            else
+            {
+                Console.WriteLine("\nNo hay juegos disponibles para calcular el promedio.");
+            }
+            Console.WriteLine("Presione 'enter' para volver al menú");
+            Console.ReadKey();
+        }
     }
 }
